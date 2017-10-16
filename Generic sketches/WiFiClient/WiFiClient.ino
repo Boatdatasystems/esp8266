@@ -8,12 +8,17 @@
 
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>  //  UDP library - http://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/udp-examples.html
+#include <PubSubClient.h>    //MQTT library
+
+const char* ssid     = "XXX";  // Wifi network name
+const char* password = "XXXXXX";   // wifi network password
 
 
-const char* ssid     = "padz";  // Wifi network name
-const char* password = "12348765";   // wifi network password
-
+WiFiClient espClient;
+PubSubClient client(espClient);
 WiFiUDP Udp;
+
+
 unsigned int localUdpPort = 4210;  // local port to listen on
 char incomingPacket[255];  // buffer for incoming packets
 char  replyPacekt[] = "Hi there! Got the message :-)";  // a reply string to send back
@@ -45,11 +50,16 @@ void setup() {
 
   Udp.begin(localUdpPort);
   Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);
-  
+
+  client.setServer("XXXXXX",XXXXX);
 }
 
 void loop() {
-  delay(50);
+  delay(500);
+
+  client.connect("myid", "XXXXXX", "XXXXXXX");
+  
+  client.publish("room", "DOES IT WORK");
 
   int packetSize = Udp.parsePacket();
   if (packetSize)
